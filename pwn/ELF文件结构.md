@@ -39,17 +39,26 @@ ELF 文件头（ELF Header）：
 ## objdump
 
 ```shell
-objdump
+objdump -f pwn	#文件头
+objdump -p pwn	#程序头(program headers)
+objdump -h pwn	#节表头(section headers)
+objdump -t pwn	#符号表
+objdump -r pwn	#重定位表
+objdump -R pwn	#动态重定位表
+objdump -x pwn	#所有头部信息，包括文件头部、节表和私有段头部。
+objdump -d pwn	#反汇编
 ```
-
-
 
 ## readelf
 
 ```shell
 readelf -h pwn	#查看ELF头
-readelf -l pwn	#查看program headers
-readelf -S pwn	#查看section headers
+readelf -l pwn	#查看程序头(program headers)
+readelf -S pwn	#查看节表头(section headers)
+readelf -s pwn	#符号表
+readelf -r pwn 	#重定位表
+readelf -d pwn 	#动态节信息
+readelf -e pwn	#所有头部信息，包括文件头部、程序头部和节表
 readelf -SW pwn	# -W 参数可以对齐，方便查看
 ```
 
@@ -60,11 +69,13 @@ readelf -SW pwn	# -W 参数可以对齐，方便查看
 ```shell
 #用于显示一个可执行文件或者共享库所依赖的动态链接库
 ldd pwn
+ldd -v pwns
 ```
 
 ## nm
 
 ```shell
+#用于显示目标文件（如可执行文件、目标文件、静态库等）中的符号表信息的命令行工具
 nm pwn
 ```
 

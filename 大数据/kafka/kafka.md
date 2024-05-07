@@ -79,4 +79,86 @@
 
 # kafka介绍
 
-Kafka 是一个分布式流处理平台和消息队列系统，最初由 LinkedIn 公司开发。它设计用于处理高吞吐量的数据流，可以用于构建实时数据管道和实时流应用程序。Kafka 的主要功能包括发布和订阅消息、存储消息、处理消息流、以及在多个系统和应用程序之间可靠地传输消息。
+Kafka 是一个分布式流处理平台和消息队列系统，最初由 LinkedIn 公司开发。它设计用于处理高吞吐量的数据流，可以用于构建实时数据管道和实时流应用程序。Kafka 的主要功能包括发布和订阅消息、存储消息、处理消息流、以及在多个系统和应用程序之间可靠地传输消息。Kafka是用scala开发的
+
+## kafka安装
+
+下载连接：[Apache Kafka](https://kafka.apache.org/downloads)
+
+```shell
+#解压
+tar -zxvf kafka_2.13‐3.3.1.tgz -C /usr/local
+
+
+```
+
+### 配置文件
+
+```shell
+#旧版本需要修改配置文件
+vim /usr/local/kafka_2.13-3.3.1/config/server.properties
+=========================================
+broker.id=0
+log.dirs=/usr/local/kafka_2.13‐3.3.1/data
+zookeeper.connect=node1:2818
+=========================================
+#新版本不需要zookeeper，修改配置文件
+
+vim /usr/local/kafka_2.13-3.3.1/config/kraft/server.properties
+=========================================
+## data1‐vm1节点
+node.id=1
+process.roles=broker,controller
+controller.quorum.voters=1@node1:9093
+inter.broker.listener.name=PLAINTEXT
+advertised.listeners=PLAINTEXT://node1:9092
+#controller.quorum.voters=1@node1:9093,2@node2:9093,3@node3:9093
+listeners=PLAINTEXT://node1:9092,CONTROLLER://node1:9093
+log.dirs=/usr/local/kafka_2.13‐3.3.1/data
+==========================================
+```
+
+
+
+## kafka目录结构
+
+![image-20240430151611817](../image/image-20240430151611817.png)
+
+- config：配置文件，比如server.properties，zookeeper.properties等。
+- libs：存放依赖库，包括卡夫卡自身的jar文件以及其它必要的依赖。
+- bin：脚本文件，比如kafka-server-start.sh用于启动卡夫卡服务器。
+- logs：日志文件，包括运行时产生的日志以及错误日志。
+- data：存放数据，包括消息日志、偏移量（offset）等。
+
+## kafka命令
+
+### 启动
+
+```shell
+#启动
+nohup /usr/local/kafka_2.13-3.3.1/bin/kafka-server-start.sh /usr/local/kafka_2.13-3.3.1/config/kraft/server.properties 2>1 & 
+
+#创建主题
+kafka-topics.sh --create --bootstrap-server node1:9092 --topic BD2
+#查看主题列表
+kafka-topics.sh --list --bootstrap-server node1:9092
+#查看主题详情
+kafka-topics.sh --describe --bootstrap-server node1:9092 --topic BD2
+#删除主题
+kafka-topics.sh --delete --bootstrap-server node1:9092 --topic BD2
+```
+
+### 生产者启动
+
+```shell
+kafka-console-producer.sh --bootstrap-server node1:9092 --topic BD2	#连接一台机器
+kafka-console-producer.sh --broker-list node1:9092 --topic BD2	#连接多台机器
+```
+
+### 消费者启动
+
+```shell
+kafka-console-consumer.sh --bootstrap-server node1:9092 -topic BD2
+kafka-console-consumer.sh --bootstrap-server node1:9092 -topic BD2 --from-beginning	#从历史开始消费
+```
+
