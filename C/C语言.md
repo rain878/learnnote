@@ -82,8 +82,6 @@ ssize_t write(int fd, const void *buf, size_t count);
 //参数三：count表示要写入的数据的字节数。
 ```
 
-
-
 ### put()
 
 ```c
@@ -104,7 +102,7 @@ putchar("a");	//常用于将单个字符输出到控制台或文件中
 
 ```c
 //函数原型：
-#include<stdio.hs>
+#include<stdio.h>
 int printf(const char *format, ...);
 printf("hackme");
 //整数类型：
