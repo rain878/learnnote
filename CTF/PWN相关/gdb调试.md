@@ -39,13 +39,9 @@ vmmap	#查看当前进程的内存映射信息
 watch *0x408018	#关注某个内存，当对这个内存有读写操作时，断在这里
 
 distance 0xdde0 0xddf0	#计算偏移
+cyclic	#生成字符，计算偏移
 
 set *0x7fffffffdd60=0xaabbccdd	#尽量四个字节改
 
 exit 或 quit #退出
 ```
-
-
-
-ptl
-

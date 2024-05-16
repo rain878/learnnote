@@ -1,5 +1,9 @@
 # 分析
 
+来自[BUUCTF在线评测 (buuoj.cn)](https://buuoj.cn/challenges#not_the_same_3dsctf_2016)
+
+这是一道ret2text(32)题，但是也可以用ret2shellcode思路来做
+
 
 
 ------

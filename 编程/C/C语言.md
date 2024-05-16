@@ -64,9 +64,19 @@ setvbuf(stdout,0,2,0);
 
 ```
 
+# 转换函数
 
+## atoi()
 
+```c
+//用于将字符串转换为整数。它接受一个表示数字的字符串作为参数，并返回相应的整数值。
+#include<ctype.h>
+char str1[] = "123",str2[] = "-456",str3[] = "abc";
+int num = atoi(str1);	// num的值将是-456
+int num = atoi(str2);	// num的值将是123
+int num = atoi(str3);	// num的值将是0，因为无法将字符串转换为整数
 
+```
 
 # IO操作
 
@@ -77,7 +87,7 @@ setvbuf(stdout,0,2,0);
 ```c
 #include <unistd.h>
 ssize_t write(int fd, const void *buf, size_t count);
-//参数一：fd表示文件描述符，指定要写入数据的文件。
+//参数一：fd表示文件描述符，指定要写入数据的文件。一般是1
 //参数二：buf表示要写入的数据的缓冲区的指针。
 //参数三：count表示要写入的数据的字节数。
 ```
@@ -202,5 +212,26 @@ int mprotect(void *addr, size_t len, int prot);
 //参数一：addr修改内存的开始指针
 //参数二：len修改内存的长度（以字节为单位）
 //参数三：prot修改成的属性，PROT_NONE：0，表示无权限、PROT_READ：1，表示可读权限、PROT_WRITE：2，表示可写权限、PROT_EXEC：4，表示可执行权限。
+```
+
+# 其他函数
+
+## getegid()
+
+```c
+//用于获取调用进程的有效组ID（Effective Group ID）。它通常用于确定进程所属的用户组。
+#include <unistd.h>
+gid_t getegid(void);
+```
+
+## setresgid()
+
+```c
+//用于设置进程的实际、有效和保存的组ID（Real, Effective, Saved Group ID）。它允许动态地更改进程所属的组。
+#include <unistd.h>
+int setresgid(gid_t rgid, gid_t egid, gid_t sgid);
+//rgid 表示实际组ID（Real Group ID）
+//egid 表示有效组ID（Effective Group ID）
+//sgid 表示保存的组ID（Saved Group ID）
 ```
 

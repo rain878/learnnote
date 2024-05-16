@@ -137,7 +137,8 @@ log.dirs=/usr/local/kafka_2.13‐3.3.1/data
 ```shell
 #启动
 nohup /usr/local/kafka_2.13-3.3.1/bin/kafka-server-start.sh /usr/local/kafka_2.13-3.3.1/config/kraft/server.properties 2>1 & 
-
+#关闭
+kafka-server-stop.sh
 #创建主题
 kafka-topics.sh --create --bootstrap-server node1:9092 --topic BD2
 #查看主题列表

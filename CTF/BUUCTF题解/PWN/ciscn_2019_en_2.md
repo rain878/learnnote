@@ -2,11 +2,9 @@
 
 来自[BUUCTF在线评测 (buuoj.cn)](https://buuoj.cn/challenges#ciscn_2019_en_2)
 
-这题是64位的ret2libc
+这题是ret2libc(64)
 
 
-
-------
 
 # exp
 

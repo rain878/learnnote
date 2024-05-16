@@ -269,4 +269,53 @@ Spark Streaming的程序必须要有输出语句：print foreachRDD saveAsTextFi
 ```scala
 val sparkConf = new SparkConf().setMaster("local[*]").setAppName("spark")
 val ssc = new StreamingContext(sparkConf,Seconds(3))
+
+ssc.start()
+ssc.awaitTermination()
 ```
+
+```scala
+12、代码题：Dataset转换DataFrame
+a)样例类case class People(val name：String,val address:String)
+b)val sparkConf = new SparkConf().setMaster(“local[*]”).setAppName(“spark”)
+c)val spark = SparkSession.builder().config(sparkConf).getOrCreate()
+d)import  spark.implicts._
+
+
+
+e)spark.close()
+
+
+4.代码题：SparkRDD，以逗号拆分单词，将结果转换成字符串进行输出。
+val sparkConf = new SparkConf.setMaster(“local[*]”).setAppName(“Spark”)
+val sc = new SparkContext(SparkConf)
+
+sc.stop()
+
+3.计算题
+a）用Spark读取一个文本文件并创建一个RDD
+val rdd = sparkContext(sc).textFile(path)
+b)将一个RDD中的元素进行分组，并返回每个分组中的最大值  //二选一，建议第二句
+i.val rdd2 = rdd.groupBy(x=>x)mapValues(_.max)
+ii.val rdd2 = rdd.flatMap(_.spilt(“ ”)).groupBy(x=>x).mapValues(_.max)
+c)
+i.val data = sc.makeRDD(Seq((1,2),(3,4),(5,6),(7,8)))
+ii.val res = data.reduce((x,y)=>(X._1+y._1,x._2+y._2))
+iii.res = (16,20)//1+3+5+7 = 16  2+4+6+8 =2
+d)
+val rdd1 = sc.makrRDD(Seq(1,”A”),(2,”B”))
+val rdd2 = sc.makeRDD((1,”C” ),(3,”D”))
+将rdd1和rdd2进行连接 val res = rdd1.join(rdd2)
+Res = (1,(“A”,”C”))
+e)
+val rdd1 =sc.makeRDD(Seq((1,2),(3,4),(3,6)))
+val rdd2 = sc.makeRDD(Seq((3,9)))
+val res = rdd1.join(rdd2)
+print(res.collect().mkString(“,”))
+输出结果：（3，（4，9）） ， （3，（6，9））
+f）
+val rdd = sc.makeRDD(Seq(“Hadoop”,”Scala”,”Python”))
+val res = rdd.filter(_contains(“a”)).count
+res = 2
+```
+
