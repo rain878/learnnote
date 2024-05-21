@@ -11,7 +11,7 @@ exprot
 ./bin/flume-ng agent -c conf/ -n a1 -f job/flume-dir-hdfs.conf 
 ```
 
-## 配置
+# 配置
 
 ## 端口监听配置
 
@@ -103,5 +103,72 @@ a1.channels.c1.transactionCapacity = 100
 #发送者->缓冲区->接收者->控制台(其他)
 a1.sources.r1.channels = c1	#接收者和缓冲区进行连接
 a1.sinks.k1.channel = c1	#发送者和缓冲区进行连接
+```
+
+## 多个文件夹监听配置
+
+```shell
+# 命名组件
+a1.sources = r1
+a1.sinks = k1
+a1.channels = c1
+# 配置接收者
+a1.sources.r1.type = TAILDIR #TAILDIR支持断点续传，监听多个文件
+a1.sources.r1.filegroups = f1 f2 #创建一个监听文件组，有两个文件f1 f2
+a1.sources.r1.filegroups.f1 = /export/data/files/.*file.* #监听包含file的文件
+a1.sources.r1.filegroups.f2 = /export/data/files2/.*log.*	#监听包含log的文件
+a1.sources.r1.positionFile = /export/data/tail_dir_position.json #断点续传文件
+# 配置发送者
+a1.sinks.k1.type = hdfs
+a1.sinks.k1.hdfs.path = hdfs://node1:8020/flume/tail/%Y%m%d/%H
+a1.sinks.k1.hdfs.filePrefix = tail- # 上传文件的前置
+a1.sinks.k1.hdfs.round = true # 是否按照时间滚动文件夹
+a1.sinks.k1.hdfs.roundValue = 1 # 多少时间创建一个新的文件夹
+a1.sinks.k1.hdfs.roundUnit = hour # 定义时间单位
+a1.sinks.k1.hdfs.useLocalTimeStamp = true # 是否使用本地时间戳
+a1.sinks.k1.hdfs.batchSize = 100 # 多少个event才flush到HDFS
+a1.sinks.k1.hdfs.fileType = DataStream # 设置文件类型，支持压缩格式
+a1.sinks.k1.hdfs.rollInterval = 30 # 多久生成一个新的文件（单位为秒）
+a1.sinks.k1.hdfs.rollSize = 134217700 # 设置每个文件的滚动大小
+a1.sinks.k1.hdfs.rollCount = 0 # 设置滚动与event数量无关
+# 配置缓冲区
+a1.channels.c1.type = memory 
+a1.channels.c1.capacity = 1000
+a1.channels.c1.transactionCapacity = 100
+#发送者->缓冲区->接收者->控制台(其他)
+a1.sources.r1.channels = c1	#接收者和缓冲区进行连接
+a1.sinks.k1.channel = c1	#发送者和缓冲区进行连接
+```
+
+```shell
+ Name the components on this agent
+a1.sources = r1
+a1.channels = c1
+a1.sinkgroups = g1
+a1.sinks = k1 k2
+# Describe/configure the source
+a1.sources.r1.type = netcat
+a1.sources.r1.bind = localhost
+a1.sources.r1.port = 44444
+a1.sinkgroups.g1.processor.type = failover
+a1.sinkgroups.g1.processor.priority.k1 = 5
+a1.sinkgroups.g1.processor.priority.k2 = 10
+a1.sinkgroups.g1.processor.maxpenalty = 10000
+# Describe the sink
+a1.sinks.k1.type = avro
+a1.sinks.k1.hostname = node1
+a1.sinks.k1.port = 4141
+a1.sinks.k2.type = avro
+a1.sinks.k2.hostname = node1
+a1.sinks.k2.port = 4142
+# Describe the channel
+a1.channels.c1.type = memory
+a1.channels.c1.capacity = 1000
+a1.channels.c1.transactionCapacity = 100
+# Bind the source and sink to the channel
+a1.sources.r1.channels = c1
+a1.sinkgroups.g1.sinks = k1 k2
+a1.sinks.k1.channel = c1
+a1.sinks.k2.channel = c1
 ```
 

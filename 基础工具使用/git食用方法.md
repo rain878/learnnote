@@ -59,7 +59,7 @@ git reset --mixed #工作区不会清空，暂存区会清空（不加参数默�
 git clone
 ```
 
-查看差异
+# 查看差异
 
 ```shell
 git diff #查看工作区和暂存区的差异
@@ -67,7 +67,7 @@ git diff --cached #查看暂存区和本地仓库的差异
 git diff [提交ID] [提交ID] #查看两次提交的差异
 ```
 
-忽略文件
+# 忽略文件
 
 ```shell
 touch .gitignore
@@ -76,13 +76,15 @@ touch .gitignore
 https://github.com/github/gitignore
 ```
 
-添加github
+# 添加github
 
 ```shell
 ssh-keygen -t rsa -b 4096 #生产ssh公私密钥
 id_rsa #密钥，本地存储，自行保留
 id_rsa.pub #公钥，上传到远程仓库
-git remote -v #查看管理仓库
+git remote #查看远程仓库分支
+git remote -v #查看远程 仓库
+
 git push -u origin main:main #关联分支
 
 ```

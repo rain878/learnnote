@@ -10,11 +10,11 @@ Spark由Scala语言编写，支持Scala、Java、python、R等编程语言
 
 Spark各个模块介绍
 
-1. Spark Core：是提供了Spark最基础核心的功能
-2. Spark SQL： 用于处理结构化和半结构化数据的组件（模块）
-3. Spark Streaming：针对实时数据进行流式计算的组件
-4. Spark MLib： 机器学习算法库
-5. Spark GraphX：图计算的框架和算法库
+1. `Spark Core`：是提供了Spark最基础核心的功能
+2. `Spark SQL`： 用于处理结构化和半结构化数据的组件（模块）
+3. `Spark Streaming`：针对实时数据进行流式计算的组件
+4. `Spark MLib`： 机器学习算法库
+5. `Spark GraphX`：图计算的框架和算法库
 
 Spark优缺点
 
@@ -25,21 +25,21 @@ Spark优缺点
 
 # Spark的部署方式
 
-1. 本地方式
+## 1.本地方式
 
-   便于开发、调试、学习、测试，节省资源，将Spark应用程序和资源一起打包在本地运行
+便于开发、调试、学习、测试，节省资源，将Spark应用程序和资源一起打包在本地运行
 
-2. Standalone模式
+## 2.Standalone模式
 
-   适用于单机环境，不需要依赖其他的集群管理器，方便开发和测试，Master负责管理集群中的资源分配和任务调度，Executor负责执行用户提交的Spark应用程序
+适用于单机环境，不需要依赖其他的集群管理器，方便开发和测试，Master负责管理集群中的资源分配和任务调度，Executor负责执行用户提交的Spark应用程序spark-submit命令可提交应用程序，driver负责分发带代码和依赖到集群
 
-3. 集群模式（Yarn，Mesos，K8s模式）
+## 3.(Cluster)集群模式（Yarn，Mesos，K8s模式）
 
-   需要依赖其他的集群管理器（Yarn、Mesos、K8S），使用Yarn模式安装Spark，需要配置adoop组件有ResourceManager、NodeManager。Spark的应用程序运行在Spark集群中。作为生产环境进行部署使用
+需要依赖其他的集群管理器（Yarn、Mesos、K8S），使用Yarn模式安装Spark，需要配置hadoop组件有ResourceManager、NodeManager。Spark的应用程序运行在Spark集群中。作为生产环境进行部署使用
 
-   - 客户模式：Spark的应用程序是在客户端上运行，于集群进行通讯
+## 4.客户模式(Client)
 
-------
+Spark的应用程序是在客户端上运行，于集群进行通讯
 
 # Scala相关知识
 
@@ -52,22 +52,45 @@ scala中
 - trait定义特质
 - case class定义样例类
 - extends继承类
-- ->表示函数
+- =>表示函数
 
-scala中的集合：
+## scala中的集合类型
 
-- 数组
-- List（有序且重复）
-  - 如何创建一个空集合：val list=List()
+- 数组`(Array)`可变无序
+  - 创建数组：`val ary = Array(12,45,33)`
+
+- 列表`(List)`有序不变
+  - 创建空列表：`val list=List()`
+  - 添加列表：`val otherlist="apache"::list`
   - List(1,2,3,4,5,6).foldLeft(0) 求结果 0+1+2+3+4+5+6=21
-- 元组 不能修改，获取数据用的序号
-- Map 键值对new Map()
-- Set 无序且不可重复的集合
-- 定义构造函数：在类定义中定义一个名为this的方法
-- 定义一个类，该有两个成员变量：class A(val b:String,val c:Int){}
-- 伴生对象：一个包含于类同名的对象，伴生类和伴生对象必须在同一个文件内
-  - 伴生类：一个于对象同名的类，伴生类和伴生对象必须在同一个文件内
-- 匹配模式：一种匹配值的方式
+- 元组 `(Tuple)`不可变不重复
+  - 创建元组：`val tuple = ("bigdata",123,2.1)`
+
+- 映射`(Map)`默认不可变
+  - 创建键值对：`val str = Map("zzz"->"123","aaa"->"321")`
+
+- 集合`(Set)` 无序不可重复，默认不可变
+  - 创建集合：`var myset = Set("aaa","bbb")`
+
+- 迭代器`(Iterator)`不是集合，是访问集合的方法
+- 序列类`(Seq)`用于按顺序访问集合中的元素
+
+## 面向对象编程
+
+类`(class)`
+
+- 定义一个类，两个变量：`class A(val b:String,val c:Int){}`
+
+对象`(object)`
+
+特质`(trait)`
+
+构造函数`(this)`：在类定义中定义一个名为this的方法
+
+伴生对象：一个包含于类同名的对象，伴生类和伴生对象必须在同一个文件内
+- 伴生类：一个于对象同名的类，伴生类和伴生对象必须在同一个文件内
+
+匹配模式：一种匹配值的方式
 
 ------
 
@@ -79,109 +102,41 @@ RDD分布式转换算子、行动算子
 
 转换算子
 
-​	map：对RDD的每个元素应用函数、返回一个新的RDD
+- `map`：对RDD的每个元素应用函数、返回一个新的RDD
+- `filter`：返回一个新的RDD（新的RDD是原RDD的子集），包含应用函数后返回值为true的原始元素，不会触发shuffle排序
+- `flagMap`：每个输入元素可以映射到0或多个输入元素
+- `mapPartitions`
+- `mapPartitionsWithIndex`
+- `sample`
+- `union`
+- `intersection`
+- `distinct`
+- `groupByKey`
+- `reduceByKey`
+- `aggregateByKey`
+- `sortByKey`
+- `sortBy`
+- `join`
+- `cogroup`
+- `cartesian`
+- `pipe`
+- `coalesce`减少 RDD 的分区数到指定值
+- `repartition`RDD元素中根据某些条件进行重新分区
 
-​	filter：返回一个新的RDD（新的RDD是原RDD的子集），包含应用函数后返回值为true的原始元素，不会触发shuffle排序
+行动算子
 
-​	flagMap：每个输入元素可以映射到0或多个输入元素
-
-​	reduceBykey：适用于键值对的RDD，返回一个新的RDD，其中每个键的值是应用函数聚合的结果
-
-​	join：对于两个键值对RDD，返回一个新的RDD，包含两个RDD中键相同的元素的组合
-
-​	distinct：返回一个新的RDD，对原RDD中的数据进行去重
-
-​	repartitions：返回一个新的RDD，可以将RDD中的元素根据某些条件进行重新分区
-
-​	union：对源RDD和参数RDD求并集，返回一个新的RDD
-
-​	intersection：对源RDD和参数RDD求交集，返回一个新的RDD
-
-​	substract：对源RDD和参数RDD求差集，返回一个新的RDD
-
-​	sortBy：根据指定的规则对数据源中的数据进行排序，默认是升序，返回一个新的RDD
-
-​	zip：相同位置的数据拉取到一块
-
-​	groupBy：将数据根据指定的规则进行分组，返回一个新的RDD
-
-​	reduce：聚合RDD中的所有元素，先聚合分区内数据，在聚合分区间数据
-
-​	collect：将RDD转换成数组
-
-​	count：将返回RDD中数据的个数
-
-​	first：将返回RDD中的第一个元素
-
-​	take：将返回RDD中的n个元素
-
-​	fold：根据RDD中的元素，进行累加计算
-
-​	countByKey：统计每种Key的个数
-
-​	saveAsTextFile：将RDD保存到文件系统中
-
-​	foreach：对RDD中元素进行遍历
-
-## 计算题
-
-用Spark读取一个文本文件并创建一个RDD
-
-```scala
-val rdd = sparkContext(sc).textFile(path)
-```
-
-将一个RDD中的元素进行分组，并返回每个分组中的最大值
-
-```scala
-val rdd2 = rdd.groupBy(x=>y).mapValues(_.max)
-val rdd2 = rdd.flatMap(_.split(" ")).groupBy(x=>y).mapValues(_.max)
-```
-
-将两个进行join连接
-
-```scala
-val rdd1 = sc.makeRDD(List((1,"A"),(2,"B")))
-val rdd2 = sc.makeRDD((1,"C"),(3,"D"))
-val res = rdd1.join(rdd2)	//将rdd1和rdd2进行连接
-res = (1,("A","C"))
-```
-
-求分组内的和
-
-```scala
-val data = sc.makeRDD(List((1,2),(3,4),(5,6),(7,8)))
-val res = data.reduce((x,y)=>(x._1 + y_.1, x._2 + y._2))
-res = (16,20)//1+3+5+7=16,2+4+6+8=20
-```
-
-将两个
-
-```scala
-val rdd1 = sc.makeRDD(List((1,2),(3,4),(3,6)))
-val rdd2 = sc.makeRDD(List((3,9)))
-val res = rdd1.join(rdd2)
-print(res.collect().mkString(","))
-```
-
-统计包含“A”字符的单词
-
-```scala
-val rdd = sc.makeRDD(List("Hadoop","Scala","Python"))
-val res = rdd.filter(_.contains("a")).count
-res = 2
-```
-
-## 代码题
-
-​	SparkRDD，以逗号拆分单词，将结果转换成字符串进行输出
-
-```scala
-val sparkConf = new SparkConf.setMaster("local[*]").setAppName("Spark")
-val sc = new SparkContext(sparkConf)
-```
-
-------
+- `reduce`：聚合RDD中的所有元素，先聚合分区内数据，在聚合分区间数据
+- `collect`：将RDD转换成数组
+- `count`：将返回RDD中数据的个数
+- `first`：将返回RDD中的第一个元素
+- `take`：将返回RDD中的n个元素
+- `fold`：根据RDD中的元素，进行累加计算
+- `countByKey`：统计每种Key的个数
+- `saveAsTextFile`：将RDD保存到文件系统中
+- `foreach`：对RDD中元素进行遍历
+- `max`
+- `min`
+- `sum`
 
 # SparkSQL
 
@@ -207,9 +162,17 @@ RDD、DataFrame、Dataset三者的转换
 
 ​	Dataset 转 DataFrame：(内容).toDF()
 
-读取JSON文件：Spark.read.json()  或者 spark.read.format("json")
+读取JSON文件：`Spark.read.json()`  或者 `spark.read.format("json")`
 
-将DataFrame保存数据库：DataFrame.write.format("mysql")
+将DataFrame保存数据库：`DataFrame.write.format("mysql")`
+
+将DataFrame保存到数据库中用`DataFrame.write()`
+
+将RDD写入写入到HDFS：`rdd.saveAsTextFile("hdfs://path/to/output")`
+
+从HDFS中读取一个文件并创建RDD：`val rdd = sc.textFile("hdfs://path/to/file")`
+
+执行原生SQL语句：spark.sql("原生语句")
 
 临时试图
 
@@ -217,105 +180,219 @@ RDD、DataFrame、Dataset三者的转换
 - 创建全局临时试图：createGlobalTemView
 - 创建临时试图：createTempView
 
-执行原生SQL语句：spark.sql("原生语句")
+
+
+
 
 用户自定义函数：UAF，UDAF
 
 DataFrame和Dataset相关函数
 
-- count()	计算行的总数
+- count() ：计算行的总数
 - sum() ：求某一列的总和
 - max()：求某一列的最大值
 - select()：对指定列数据进行查询
-- filter()：对指定列数据进行过滤
+- filter()：对指定列数据进行**过滤**
 - groupBy()：对指定规则进行分组
 - orderBy()：对指定列进行排序
 - join()：对两个DataFrame(Dataset)进行连接
-- distinct()：对指定列的数据进行去重
-
-代码题：RDD转换Dataset
-
-```scala
-case class People(val name:String,val address:String)
-val sparkConf = new SparkConf().setMaster("local[*]").setAppName("spark")
-val spark = SparkSession.builder().config(sparkConf).getOrCreate()
-import spark.implicts
-```
-
-------
+- distinct()：对指定列的数据进行**去重**
 
 # Spark Streaming
 
 是实时数据的流式计算，在实时数据处理和交互式查询上支持实时数据处理，
 
-spark Streaming 数据处理的基本单元是：DStream
+spark Streaming 数据处理的基本单元是：**DStream**
 
-DStream是流式处理的输入数据流
+DStream是流式处理的**输入数据流**
 
-checpoint 的目的是计算累积的结果，避免数据丢失，与之使用的函数，updataStateByKey	reduceByKeyAndWindow
-
-将实时数据DStream转换成Dataset或者DataFrame或者RDD
+checpoint 的目的是计算累积的结果，**避免数据丢失**，与之使用的函数，updataStateByKey，reduceByKeyAndWindow
 
 transform只有转换的作用
 
-foreachRDD转换和输出的作用
+`foreachRDD`将实时数据流转换为 DataFrame 或 DataSet，转换和输出的作用
 
 Spark Streaming的程序必须要有输出语句：print foreachRDD saveAsTextFiles
 
 使用窗口操作来计算近30分钟的数据，窗口长度：30分钟，滑动间隔：30分钟
 
-代码题：转换 transform
-
 ```scala
-val sparkConf = new SparkConf().setMaster("local[*]").setAppName("spark")
-val ssc = new StreamingContext(sparkConf,Seconds(3))
+//代码题：RDD转换Dataset
+case class People(val name:String,val age:Int)
+def main(args: Array[String]): Unit = {
+  val spark:SparkSession=SparkSession.builder().master("local[*]").appName("SparkSQL").getOrCreate()
+  val sc: SparkContext = spark.sparkContext
+  val rdd:RDD[(String,Int)]=sc.makeRDD(List(("张三",16),("李四",15)))
+  import spark.implicits._ //导入隐式转换
+  val ds:Dataset[People] = rdd.map{
+    case (name,age)=>People(name,age)
+  }.toDS()
+  ds.show()
+}
+//RDD转DataFrame
+case class People(name: String, age: Int)
+def main(args: Array[String]): Unit = {
+  val spark:SparkSession=SparkSession.builder().master("local[*]").appName("SparkSQL").getOrCreate()
+  val sc: SparkContext = spark.sparkContext
+  val rdd: RDD[(String, Int)] = sc.makeRDD(List(("张三", 16), ("李四", 15)))
+  import spark.implicits._ //导入隐式转换
+  val df: DataFrame = rdd.map {
+    case (name, age) => People(name, age)
+  }.toDF()
+  df.show()
+}
+//Dataset转DataFrame
+case class People(name: String, age: Int)
+def main(args: Array[String]): Unit = {
+  val spark:SparkSession=SparkSession.builder().master("local[*]").appName("SparkSQL").getOrCreate()
+  import spark.implicits._ //导入隐式转换
+  val ds: Dataset[People]=spark.createDataset(Seq(People("Alice", 30),People("Bob", 25),People("Charlie", 35)))
+  val df: DataFrame = ds.toDF()
+  df.show()
+}
+//DataFrame转Dataset
+case class People(name: String, age: Int)
+def main(args: Array[String]): Unit = {
+  val spark:SparkSession=SparkSession.builder().master("local[*]").appName("SparkSQL").getOrCreate()
+	import spark.implicits._ //导入隐式转换
+  val df:DataFrame=spark.createDataFrame(Seq(("Alice", 30),("Bob", 25),("Charlie",35))).toDF("name","age")
+  val ds: Dataset[People] = df.as[People]
+  ds.show()
+}
+//代码题：SparkRDD读取文件以逗号拆分单词，将结果转换成字符串进行输出。
+def main(args: Array[String]): Unit = {
+    val conf = new SparkConf().setAppName("WordCount").setMaster("local[*]")
+    val sc = new SparkContext(conf)
+    val lines = sc.textFile("input.txt")
+    val words = lines.flatMap(line => line.split(","))
+    val result = words.collect().mkString(", ")
+    println(result)
+    sc.stop()
+  }
+//SparkRDD 给出一段单词，以空格拆分单词，将结果转换成字符串进行输出。
+def main(args: Array[String]): Unit = {
+  val sparkconf = new SparkConf().setAppName("RDDToString").setMaster("local[*]")
+  val sc = new SparkContext(sparkconf)
+  val rdd: RDD[String] = sc.makeRDD(List("Hello Spark", "Hadoop Hbase", "Scala Python"))
+  //val result: String = rdd.reduce((str1, str2) => str1 + ", " + str2)
+  val res:RDD[String]=rdd.flatMap(s=>{
+    s.split(" ")
+  })
+  println(result)
+  sc.stop()
+}
+//用Spark读取一个文本文件并创建一个RDD
+def main(args: Array[String]): Unit = {
+  val conf = new SparkConf().setAppName("ReadTextFile").setMaster("local[*]")
+  val sc = new SparkContext(conf)
+  val file = "input/file.txt"
+  val rdd: RDD[String] = sc.textFile(file)
+  rdd.take(5).foreach(println)
+  sc.stop()
+}
+//将一个RDD中的元素进行分组，并返回每个分组中的最大值  二选一，建议第二句
+val rdd2 = rdd.groupBy(x=>x)mapValues(_.max)
+val rdd2 = rdd.flatMap(_.spilt(" ")).groupBy(x=>x).mapValues(_.max)
 
-ssc.start()
-ssc.awaitTermination()
-```
+val data = sc.makeRDD(Seq((1,2),(3,4),(5,6),(7,8)))
+val res = data.reduce((x,y)=>(X._1+y._1,x._2+y._2))
+res = (16,20)//1+3+5+7 = 16  2+4+6+8 =2
 
-```scala
-12、代码题：Dataset转换DataFrame
-a)样例类case class People(val name：String,val address:String)
-b)val sparkConf = new SparkConf().setMaster(“local[*]”).setAppName(“spark”)
-c)val spark = SparkSession.builder().config(sparkConf).getOrCreate()
-d)import  spark.implicts._
+//处理数据进行扁平化
+def main(args:Array[String]):Unit={
+  val sparkConf = new Sparkconf().setMaster("local[*]").setAppName("spark")
+  val sc = new SparkContext(sparkConf)
+  val rdd:RDD[List[Int]] = sc.makeRDD(List(List(1,2),List(2,3)))
+  val res:RDD[Int] = rdd.flatMap(
+    list=>{list}
+  )
+  res.collect().foreach(println)
+  sc.stop()
+}
+//计算所有分区最大值求和（分区内取最大值，分区间最大值求和）
+def main(args:Array[String]):Unit={
+  val conf = new SparkConf().setMaster("local[*]").setAppName("spark")
+  val sc = new SparkContext(conf)
+  val rdd:RDD[Int]=sc.makeRDD(List(1,2,3,4),2)
+  val res1:RDD[Array[Int]]=rdd.glom()
+  val maxres:RDD[Int]=res1.map(array=>{array.max})
+  sc.stop()
+}
+//将一串单词进行首字母分组
+def main(args:Array[String]):Unit={
+  val conf = new SparkConf().setMaster("local[*]").setAppName("spark")
+  val sc = new SparkContext(conf)
+  val rdd:RDD[String]=sc.makeRDD(List("hello","spark","scalc"m"hadoop"),2)
+  val res:RDD[String]=rdd.groupBy(_.charAt(0))
+  res.collect().foreach(println)
+	sc.stop()
+}
+//将rdd1和rdd2进行连接
+def main(args:Array[String]):Unit+{
+  val conf = new SparkConf().setMaster("local[*]").setAppName("spark")
+  val sc = new SparkContext(conf)
+  val rdd1 = sc.makrRDD(List((1,"A"),(2,"B")))
+  val rdd2 = sc.makeRDD(List((1,"C" ),(3,"D")))
+  val res = rdd1.join(rdd2)
+  Res = (1,("A","C"))
+}
 
+//外部存储创建RDD
+def fileCreateRDD(sprakContext: SparkContext): Unit = {
+  val conf = new SparkConf().setMaster("local[*]").setAppName("Spark")  //准备环境
+  val sc = new SparkContext(conf)  //让SparkContext去加载配置
+  val rdd4:RDD[String] = sprakContext.textFile("input/1.txt")
+  rdd4.collect().foreach(println)
+}
 
+//将一个RDD中的元素进行分组，并返回每个分组中的最大值
+def main(args: Array[String]): Unit = {
+  val conf = new SparkConf().setMaster("local[*]").setAppName("Spark")  //准备环境
+  val sc = new SparkContext(conf)  //让SparkContext去加载配置
+  val rdd:RDD[Int] = sc.makeRDD(Array(10, 20, 30, 40, 50))
+  val rdd1 = rdd.groupBy(x=>y).mapValues(_.max)
+  val rdd2 = rdd.flatMap(_.split(" ")).groupBy(x=>y).mapValues(_.max)
+  sc.stop()
+}
 
-e)spark.close()
-
-
-4.代码题：SparkRDD，以逗号拆分单词，将结果转换成字符串进行输出。
-val sparkConf = new SparkConf.setMaster(“local[*]”).setAppName(“Spark”)
-val sc = new SparkContext(SparkConf)
-
-sc.stop()
-
-3.计算题
-a）用Spark读取一个文本文件并创建一个RDD
-val rdd = sparkContext(sc).textFile(path)
-b)将一个RDD中的元素进行分组，并返回每个分组中的最大值  //二选一，建议第二句
-i.val rdd2 = rdd.groupBy(x=>x)mapValues(_.max)
-ii.val rdd2 = rdd.flatMap(_.spilt(“ ”)).groupBy(x=>x).mapValues(_.max)
-c)
-i.val data = sc.makeRDD(Seq((1,2),(3,4),(5,6),(7,8)))
-ii.val res = data.reduce((x,y)=>(X._1+y._1,x._2+y._2))
-iii.res = (16,20)//1+3+5+7 = 16  2+4+6+8 =2
-d)
-val rdd1 = sc.makrRDD(Seq(1,”A”),(2,”B”))
-val rdd2 = sc.makeRDD((1,”C” ),(3,”D”))
-将rdd1和rdd2进行连接 val res = rdd1.join(rdd2)
-Res = (1,(“A”,”C”))
-e)
-val rdd1 =sc.makeRDD(Seq((1,2),(3,4),(3,6)))
-val rdd2 = sc.makeRDD(Seq((3,9)))
-val res = rdd1.join(rdd2)
-print(res.collect().mkString(“,”))
-输出结果：（3，（4，9）） ， （3，（6，9））
-f）
-val rdd = sc.makeRDD(Seq(“Hadoop”,”Scala”,”Python”))
-val res = rdd.filter(_contains(“a”)).count
-res = 2
+//统计包含"A”字符的单词
+def main(args:Array[String]):Unit={
+  val conf = new SparkConf().setMaster("local[*]").setAppName("spark")
+  val sc = new SparkContext(conf)
+  val rdd = sc.makeRDD(List("Hadoop","Scala","Python"))
+  val res = rdd.filter(_.contains("a")).count
+  res.collect.foreach(println)
+}
+//将两个进行join连接
+def main(args:Array[String]):Unit={
+  val conf = new SparkConf().setMaster("local[*]").setAppName("spark")
+  val sc = new SparkContext(conf)
+  val rdd1 = sc.makeRDD(List((1,"A"),(2,"B")))
+  val rdd2 = sc.makeRDD(List((1,"C"),(3,"D")))
+  val res = rdd1.join(rdd2)
+  //res = (1,("A","C"))
+  println(res)
+  sc.stop()
+}
+//求分组内的和
+def main(args:Array[String]):Unit={
+  val conf = new SparkConf().setMaster("local[*]").setAppName("spark")
+  val sc = new SparkContext(conf)
+  val data = sc.makeRDD(List((1,2),(3,4),(5,6),(7,8)))
+	val res = data.reduce((x, y) => (x._1 + y._1, x._2 + y._2))
+  //res = (16,20) 1+3+5+7=16,2+4+6+8=20
+  println(res)
+  sc.stop()
+}
+//将两个join
+def main(args:Array[String]):Unit={
+  val conf = new SparkConf().setMaster("local[*]").setAppName("spark")
+  val sc = new SparkContext(conf)
+  val rdd1 =sc.makeRDD(Seq((1,2),(3,4),(3,6)))
+  val rdd2 = sc.makeRDD(Seq((3,9)))
+  val res = rdd1.join(rdd2)
+  print(res.collect().mkString(","))
+  sc.stop()
+}
 ```
 
