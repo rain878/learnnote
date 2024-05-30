@@ -30,10 +30,16 @@ fin 或 finish	#让程序执行函数，并停止在函数返回处
 
 x/[count][format] address	#查看地址
 x/20gx 0x12345678
+hexdump 0x12345678
+telescope 0x12345678
 
 stack	#查看栈
 plt	#查看plt表
 got	#查看got表
+heap #查看堆
+vis_heap_chunks #查看堆内容
+parseheap #查看堆信息
+bins #查看bins
 regs	#查看寄存器
 vmmap	#查看当前进程的内存映射信息
 watch *0x408018	#关注某个内存，当对这个内存有读写操作时，断在这里

@@ -78,6 +78,12 @@ int num = atoi(str3);	// num的值将是0，因为无法将字符串转换为整
 
 ```
 
+# 数据操作
+
+## 比较操作
+
+
+
 # IO操作
 
 ## 输出函数
@@ -196,6 +202,30 @@ int main() {
     memset(buffer, 'A', sizeof(buffer));
     return 0;
 }
+```
+
+## memchr()
+
+```c
+#include<string.h>
+void *memchr(const void *s, int c, size_t n);
+//参数一：指向要搜索的内存块的指针(不修改数据)
+//参数二：要搜索的字符
+//参数三：要搜索的字节数
+返回值
+如果在前 n 个字节中找到了字符 c，memchr 返回指向该字符的指针。
+如果在前 n 个字节中没有找到字符 c，memchr 返回 NULL。
+```
+
+## memcpy()
+
+```c
+#include<string.h>
+void *memcpy(void *dest, const void *src, size_t n);
+//参数一：指向目标的内存块的指针，大到容纳源数据
+//参数二：指向源内存块的指针
+//参数三：要复制的字节数
+
 ```
 
 
