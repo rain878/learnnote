@@ -122,8 +122,6 @@ log.dirs=/usr/local/kafka_2.13‐3.3.1/data
 
 ## kafka目录结构
 
-![image-20240430151611817](../image/image-20240430151611817.png)
-
 - config：配置文件，比如server.properties，zookeeper.properties等。
 - libs：存放依赖库，包括卡夫卡自身的jar文件以及其它必要的依赖。
 - bin：脚本文件，比如kafka-server-start.sh用于启动卡夫卡服务器。

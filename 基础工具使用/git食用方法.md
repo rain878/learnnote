@@ -1,24 +1,20 @@
-# 安装
+# 安装和介绍
 
 ```shell
 sudo apt install git
-
-```
-
-**工作区** --- `git add` ---> **缓存区** --- `git commit` --->**本地仓库**
+工作区 ---> git add ---> 缓存区 ---> git commit ---> 本地仓库
 工作区：.git所在目录
 暂存区：.git/index
 本地仓库：.git/objects
 
 状态：
+  未跟踪：Untrack
+  未修改：Unmodified
+  已修改：Modified
+  已暂存：Staged
+```
 
-未跟踪：Untrack
 
-未修改：Unmodified
-
-已修改：Modified
-
-已暂存：Staged
 
 # 基础操作
 
@@ -41,7 +37,8 @@ git status
 git log
 git log --oneline #简略信息
 git ls-files #查看暂存区的文件
-
+git show #查看 Git 仓库中的提交历史和文件更改内容
+git show-ref #在本地存储库中列出引用
 #提交操作
 git add . #提交所有文件到暂存区
 git commit -m '第一次提交' #从暂存区提交到仓库
@@ -65,6 +62,13 @@ git clone
 git diff #查看工作区和暂存区的差异
 git diff --cached #查看暂存区和本地仓库的差异
 git diff [提交ID] [提交ID] #查看两次提交的差异
+```
+
+# 分支
+
+```bash
+git branch -a #查看所有分支
+git checkout []  #切换分支
 ```
 
 # 忽略文件
