@@ -222,8 +222,6 @@ sort filename -o outputfile  #将排序结果输出到指定文件uniq -c filena
 
 ```
 
-
-
 ### uniq
 
 ```bash
