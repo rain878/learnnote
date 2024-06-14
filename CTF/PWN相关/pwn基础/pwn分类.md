@@ -80,8 +80,6 @@ p.sendline(payload)
 p.interactive()
 ```
 
-
-
 ## ret2syscall
 
 ### 原理

@@ -6,7 +6,7 @@
 
 `filter_input()`
 
-``filter_var()`
+`filter_var()`
 
  `htmlspecialchars()`
 
@@ -18,7 +18,15 @@
 
 ## 1.字符串查找和替换
 
- `strpos()`, `str_replace()`, `preg_match()`
+ `strpos()`, `str_replace()`,
+
+ `preg_match()`函数用于执行一个正则表达式匹配
+
+```
+
+```
+
+
 
 ## 2.字符串长度和截取
 
@@ -132,8 +140,12 @@
 
 ## 2.图像处理
 
-`imagecreatefromjpeg()`, `imagecopyresized()`, `imagepng()`
+`imagecreatefromjpeg()`, `imagecopyresized()`, `imagepng()`,`exif_imagetype()`
 
-## 3.加密解密
+## 3.编码及加解密
 
-`password_hash()`, `password_verify()`, `md5()`, `sha1()`
+`password_hash()`, `password_verify()`, `md5()`, `sha1()`,`json_decode`,`base64_decode`,``
+
+## 4.执行系统外部命令
+
+`exec()`,`passthru()`,`system()`,`shell_exec()`

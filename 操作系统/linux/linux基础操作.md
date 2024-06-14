@@ -4,6 +4,29 @@
 
 Debian系Linux发行版的软件包管理工具
 
+```bash
+apt upadte  #更新源列表
+apt list --upgradeable  #列出可升级的软件包
+apt list --installed  #列出已安装的软件包
+apt upgrade  #升级已安装的软件包(所有)
+apt remove []  #删除软件包(保留之前的配置)
+apt purge []  #删除软件包(完全删除)
+apt autoremove  #清理不使用的依赖和库文件
+apt install []  #安装软件
+apt reinstall []  #重新安装软件包
+apt search []  #搜索软件包
+apt show []  #显示软件包信息
+
+
+```
+
+安装deb的包
+
+```
+sudo dpkg -i 123.deb
+sudo dpkg -r 123
+```
+
 ## yum
 
 Red Hat系Linux发行版的软件包管理工具
@@ -11,6 +34,40 @@ Red Hat系Linux发行版的软件包管理工具
 ## pacman
 
 Arch Linux系统中用于管理软件包的命令行工具
+
+```bash
+pacman -Syu  #同步远程更新本地
+pacman -S []  #安装软件包
+pacman -S extra/包名  #有时软件包有多个版本在不同库，指定库的软件包
+pacman -R []  #删除软件包和所有依赖。
+pacman -Rs []  #删除软件包和不被使用的依赖
+pacman -Qs  #查看已安装的软件包
+paccahe -r  #清理缓存
+pactree []  #显示软件包的依赖树
+```
+
+Arch也可以下载使用不在官方仓库AUR软件包，使用AUR包辅助管理器`yay`或者`trizen`
+
+```bash
+#下载安装yay
+git clone https://aur.archlinux.org/yay.git
+cd yay
+makepkg -si
+
+yay 	升级系统，相当于yay -Syu
+yay <搜索词> 	显示包安装选择菜单
+yay -Bi <目录> 	安装依赖并构建本地PKGBUILD
+yay -G <AUR Package> 	从ABS或AUR下载PKGBUILD (yay v12.0+)
+yay -Gp <AUR Package> 	打印ABS或AUR的PKGBUILD到stdout
+yay -Ps 	打印系统统计信息
+yay -Syu --devel 	执行系统升级，但同时检查开发包的更新
+yay -Syu --timeupdate 	执行系统升级并使用PKGBUILD修改时间（不是版本号）来确定更新
+yay -Wu <AUR Package> 	取消对包的投票 (需要设置AUR_USERNAME和AUR_PASSWORD环境变量) (yay v11.3+)
+yay -Wv <AUR Package> 	投票支持包 (需要设置AUR_USERNAME和AUR_PASSWORD环境变量) (yay v11.3+)
+yay -Y --combinedupgrade --save 	使组合升级成为默认模式
+yay -Y --gendb 	生成用于开发更新的开发包数据库
+yay -Yc 	清理不需要的依赖 
+```
 
 ## rpm
 
@@ -507,6 +564,24 @@ xz -dk file.txt.xz  #解压，保留源文件
 # 进程管理命令
 
 # 用户管理命令
+
+## 用户操作
+
+### useradd
+
+```bash
+	-m:自动为用户创建主目录
+	-d:指定用户的主目录路径
+	-s:指定用户的登录 shell
+	-g:指定用户主组，不存在，创建同名的新主组
+	-G:指定用户的附加组
+	-c:添加描述性信息
+	-u:指定用户的 UID（用户标识符）
+	
+useradd -m -s /bin/bash rain3
+```
+
+
 
 # 网络管理命令
 

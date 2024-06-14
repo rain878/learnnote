@@ -14,8 +14,6 @@ sudo apt install git
   已暂存：Staged
 ```
 
-
-
 # 基础操作
 
 ```shell
