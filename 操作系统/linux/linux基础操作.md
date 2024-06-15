@@ -16,8 +16,6 @@ apt install []  #安装软件
 apt reinstall []  #重新安装软件包
 apt search []  #搜索软件包
 apt show []  #显示软件包信息
-
-
 ```
 
 安装deb的包
