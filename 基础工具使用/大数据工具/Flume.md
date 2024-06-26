@@ -1,3 +1,37 @@
+# 介绍
+
+Flume是用来数据采集的，可以从日志文件、关系型数据库、消息队列等获取数据
+
+Flume传输流动方向是单向，数据传传输采用拉取的机制
+
+Flume事件源端数据，Souce可以是Avro、Spooling、HTTP等类型
+
+Flume事务性处理机制是通过Sink组件实现的
+
+特点：分布式、可靠、高吞吐
+
+拦截器可以添加时间、标签
+
+拦截器Interceptor是在Channel和Sink之间工作
+
+Flume支持多跳数据流，通过配置多个Agent，可以将数据从一个Agent的Sink发送到另一个Agent的Source
+
+Flume是可靠性是通过事务机制和持久化机制来保证的
+
+配置文件是使用文本格式编写的，配置中每一个Agent代表一个独立的Flume实例
+
+主要的组件：Source Channel Sink
+
+Channel缓存格式有：内存和文件
+
+Agent：每个Flume的进程，包含一个或多个Source，Channel，Sink
+
+在Flume中，Channel复制在不同组件之间传递数据，事务确保数据在传输过程中不丢失
+
+代码参考 file to kafka.conf
+
+
+
 # 安装
 
 # 启动
