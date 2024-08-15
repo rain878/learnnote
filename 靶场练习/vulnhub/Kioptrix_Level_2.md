@@ -32,9 +32,9 @@ sudo nmap -sV -p22,80,111,443,631，804,3306 192.168.88.26
 
 ![image-20240615161920349](image/image-20240615161920349.png)
 
-# 测试利用
+# web渗透
 
-## getshell1
+## 远程命令getshell
 
 访问80，发现是一个登录页面，可以考虑一下万能密码，或者爆破，试了一下万能密码`' or 1=1 -- +`，居然成功，说明有Sql注入点，443就没有什么东西
 
@@ -50,14 +50,15 @@ sudo nmap -sV -p22,80,111,443,631，804,3306 192.168.88.26
 
 ![image-20240615164311407](image/image-20240615164311407.png)
 
-成功取shell，继续进行提权，首先查看linux系统和内核信息
+## 提权
+
+首先查看linux系统和内核信息
 
 ```bash
 bash-3.00$ uname -a
 Linux kioptrix.level2 2.6.9-55.EL #1 Wed May 2 13:52:16 EDT 2007 i686 athlon i386 GNU/Linux
 cat /etc/*release
 CentOS release 4.5 (Final)
-
 searchsploit kernel 2.6 centos 4
 ```
 

@@ -636,6 +636,7 @@ ssh user@hostname  #连接，默认22端口
 ssh -p 2222 user@hostname  #指定端口连接
 ssh -i /path/to/private_key user@hostname  #指定公钥文件
 ssh user@hostname 'uptime'  #执行远程命令
+ssh user@hostname -t 'bash --noprofile'
 ssh -L 8080:localhost:80 user@hostname  #将本地的 8080 端口转发到远程主机的 80 端口
 ssh -R 8080:localhost:80 user@hostname  #将远程的 8080 端口转发到本地主机的 80 端口
 ssh -D 1080 user@hostname  #动态端口转发，启用 SOCKS 代理
@@ -668,6 +669,16 @@ openssl req -new -key server.key -out server.csr
 openssl x509 -req -days 365 -in server.csr -signkey server.key -out server.crt
 # 验证证书
 openssl verify -CAfile ca.crt server.crt
+```
+
+### ftp
+
+```bash
+?  #查看可用命令
+binary/bin  #切换二进制模式
+ascii  #切换ASCII模式
+prompt #开启或者关闭多个文件传输交互模式
+mget  #下载文件
 ```
 
 

