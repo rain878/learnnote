@@ -1,16 +1,83 @@
-# centos
+# 装机必备
 
-## 下载
+## 切换语言
 
-# ubuntu
+```bash
+dpkg-reconfigure locales
+空格选中
+reboot
+```
 
-## 下载
+## 基础包
 
-# kali
+```bash
+sudo apt install build-essential libssl-dev libxml2-dev libpcre3-dev libz-dev
 
-## 下载
 
-## 软件源
+build-essential：这是一个软件包，它包含了编译软件所需的基本工具和库。它包括gcc编译器、g++（GNU C++编译器）、make（用于自动化编译过程的工具）、gdb（调试器）等。
+libssl-dev：这个包提供了SSL开发库，用于支持HTTPS和SSL加密。
+libxml2-dev：这个包提供了XML开发库
+libpcre3-dev：这个包提供了PCRE（Perl Compatible Regular Expressions）开发库.
+libz-dev：这个包提供了zlib库的开发文件，zlib是一个用于数据压缩的库。
+```
+
+## 换zsh
+
+更换zsh环境和oh-my-zsh
+
+```bash
+sudo apt install zsh
+#切换zsh
+chsh -s /bin/zsh
+#安装oh-my-zsh
+第一种: 
+sh -c "$(curl -fsSL https://raw.github.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"
+sh -c "$(curl -fsSL https://gitee.com/shmhlsy/oh-my-zsh-install.sh/raw/master/install.sh)"  #没有梯子的使用国内镜像源
+第二种: sh -c "$(wget https://raw.github.com/ohmyzsh/ohmyzsh/master/tools/install.sh -O -)"
+第三种: git clone https://github.com/robbyrussell/oh-my-zsh.git
+#皮肤
+地址：https://github.com/ohmyzsh/ohmyzsh/wiki/Themes
+推荐皮肤：
+  candy
+  crcandy
+  rkj-repos
+  xiong-chiamiov
+#自动补全插件
+cd ~/.oh-my-zsh/plugins/
+#zsh-autosuggestions代码补全
+git clone https://github.com/zsh-users/zsh-autosuggestions ${ZSH_CUSTOM:-~/.oh-my-zsh/custom}/plugins/zsh-autosuggestions
+#zsh-syntax-highlighting代码高亮
+git clone https://github.com/zsh-users/zsh-syntax-highlighting.git ${ZSH_CUSTOM:-~/.oh-my-zsh/custom}/plugins/zsh-syntax-highlighting
+#加载插件
+在~/.zshrc 中配置
+plugins=(其他的插件 zsh-syntax-highlighting)
+source ~/.zshrc
+```
+
+## 中文输入法
+
+```bash
+sudo apt install fcitx fcitx-googlepinyin
+reboot
+```
+
+
+
+# 操作系统
+
+## centos
+
+### 下载
+
+## ubuntu
+
+### 下载
+
+## kali
+
+### 下载
+
+### 软件源
 
 ```bash
     kali-rolling：使用 KaliLinux的滚动发布（rolling release）版本，即持续更新的版本，不像传统的固定版本发行版
@@ -35,15 +102,15 @@ deb-src http://mirrors.zju.edu.cn/kali kali-rolling main contrib non-free
 
 
 
-# Arch
+## Arch
 
-## 下载
+### 下载
 
 官网[arch](https://archlinux.org/download/)
 
 阿里云下载[arch](https://mirrors.aliyun.com/archlinux/iso)
 
-## 安装
+### 安装
 
 ### 手动安装
 

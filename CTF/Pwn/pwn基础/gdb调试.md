@@ -12,8 +12,6 @@ set context-output /dev/pts/3	#设置输出
 set follow-fork-mode parent
 ```
 
-
-
 ## 命令
 
 ```shell
