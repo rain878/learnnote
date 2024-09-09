@@ -1,6 +1,6 @@
 # 环境
 
-来自[Vulny_Node](https://vulnyx.com/#Node)，
+来自[Vulny_Node](https://vulnyx.com/#Node)，利用已知node-red漏洞
 
 # 信息收集
 

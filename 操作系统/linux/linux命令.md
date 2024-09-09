@@ -1,3 +1,15 @@
+# 命令帮助
+
+## man
+
+## tldr
+
+```bash
+tldr
+```
+
+
+
 # 包管理命令
 
 **-dev**：
@@ -582,7 +594,7 @@ xz -dk file.txt.xz  #解压，保留源文件
 
 ## ps
 
-```
+```bash
 ps aux
 ps -ef
 
@@ -598,7 +610,6 @@ ps -ef
     --sort=[列名]: 根据指定列排序输出，如 ps -eo pid,ppid,cmd --sort=-pid。
     -g [进程组ID]: 显示指定进程组的进程。
     -t [终端]: 显示指定终端的所有进程。
-
 ```
 
 
