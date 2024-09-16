@@ -1,6 +1,6 @@
 # 环境
 
-来自[Vulny_Zero](https://vulnyx.com/#Zero)
+来自[Vulny_Zero](https://vulnyx.com/#Zero)，php漏洞拿shell
 
 # 信息收集
 

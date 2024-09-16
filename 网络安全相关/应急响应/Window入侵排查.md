@@ -1,3 +1,69 @@
+# Window入侵排查
+
+## 检查系统账号安全
+
+### windows
+
+通过系统的本地和用户组查看是否存在恶意账号，win+r打开，输入lusrmgr.msc
+
+```bash
+reg query HKEY_LOCAL_MACHINE\SAM\SAM\Domains\Account\Users\Names #管理员
+```
+
+通过第三方工具，D盾
+
+![image-20240911151228705](image/image-20240911151228705.png)
+
+### linux
+
+```bash
+登录信息路径：/var/log/wtmp
+						/var/log/btmp
+						/var/log/lastlog
+						/var/run/utmp
+以下命令都是经过这个文件读取登录信息的
+last -F -i  #查看登录信息
+lastlog  #查看所以用户的最后一次登录时间
+sudo lastb #查看登录失败信息
+查看当前登录的所以用户
+who -a
+w
+账号信息路径：/etc/passwd
+						/etc/shadow
+#格式：account:password:UID:GID:GECOS:directory:shell
+#用户名：密码：用户ID：组ID：用户说明：家目录：登陆之后的 shell
+
+#用户名：加密密码：密码最后一次修改日期：两次密码的修改时间间隔：密码有效期：密码修改到期到的警告天数：密码过期之后的宽限天数：账号失效时间：保留
+root:$6$oGs1PqhL2p3ZetrE$X7o7bzoouHQVSEmSgsYN5UD4.kMHx6qgbTqwNVC5oOAouXvcjQSt.Ft7ql1WpkopY0UV9ajBwUt1DpYxTCVvI/:16809:0:99999:7:::
+```
+
+## 端口排查
+
+### window
+
+```bash
+netstat -ano | findstr LIST  #正在监听的端口
+tasklist ｜ findstr [PID]  #查看对应pid的进程
+taskkill /f /pid [PID]  #终止pid进程
+```
+
+微软提供的查杀工具[MSRT](https://www.microsoft.com/zh-cn/download/details.aspx?id=9905)
+
+[火绒剑](https://bbs.huorong.cn/thread-18575-1-1.html)
+
+### Linux
+
+```bash
+top  #查看哪个pid占用高
+ps -aux 8888 #查看进程
+pstree -asp 8888 #查看父子进程
+sudo netstat -anp | grep pid  #查看进程网络连接
+sudo lsof -p 8888
+kill 9 8888
+```
+
+
+
 # 日志分类
 
 windows日志主要有

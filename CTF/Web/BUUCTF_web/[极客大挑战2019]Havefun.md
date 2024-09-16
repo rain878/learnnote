@@ -1,6 +1,6 @@
 # 分析
 
-来自[[极客大挑战 2019]Havefun](https://buuoj.cn/challenges#[%E6%9E%81%E5%AE%A2%E5%A4%A7%E6%8C%91%E6%88%98%202019]Havefun)
+来自[[极客大挑战 2019]Havefun](https://buuoj.cn/challenges#[%E6%9E%81%E5%AE%A2%E5%A4%A7%E6%8C%91%E6%88%98%202019]Havefun)，代码审计
 
 一看没啥功能的页面，F12查看源代码，
 

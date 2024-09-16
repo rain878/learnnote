@@ -2,17 +2,17 @@
 
 ELF文件结构：熟悉二进制文件结构，[参考](https://ctf-wiki.org/executable/elf/structure/basic-info/)
 
-IDA的使用：进行反汇编逆向分析程序
+IDA的使用：进行反汇编逆向分析程序，[参考](https://blog.csdn.net/qq_52642385/article/details/135620222)
 
-python的pwntools库：熟悉python并能编写利用脚本
+python的pwntools库：熟悉python并能编写利用脚本，[参考](https://pwntools-docs-zh.readthedocs.io/zh-cn/dev/install.html)
 
 系统和编译提供保护：ASLR、PIE、NX、Canary、RELRO
 
-## Pwn的主要漏洞
+# Pwn的主要漏洞
 
-### 栈溢出
+## 栈溢出
 
-#### ret2text
+### ret2text
 
 原理：通过溢出，对返回地址进行劫持，来获取shell
 
@@ -40,11 +40,11 @@ p.sendline(payload)
 p.interactive()
 ```
 
-#### ret2shellcode
+### ret2shellcode
 
 原理：当没有开启NX保护时，栈是可以被执行的，利用栈溢出，来实现劫持返回地址，返回到准备好的shellcode来进行取shell
 
-##### 手写shellcode
+#### 手写shellcode
 
 得根据实际情况去写shellcode
 
@@ -75,7 +75,7 @@ p.interactive()
   syscall
 ```
 
-##### 工具写shellcode
+#### 工具写shellcode
 
 在 pwntools 中，shellcraft 模块用于生成各种类型的 shellcode，例如反弹 shell、执行系统调用等。
 
@@ -105,7 +105,7 @@ p.sendline(payload)
 p.interactive()
 ```
 
-#### ret2syscall
+### ret2syscall
 
 原理：通过ROP执行系统调用，利用系统调用来执行"/bin/sh"来拿shell
 
@@ -139,7 +139,7 @@ p.sendlineafter('Exit\n:',b'4')
 p.interactive()
 ```
 
-#### ret2libc
+### ret2libc
 
 原理：利用栈溢出漏洞，劫持返回地址，利用程序已链接库中的函数，来进行取shell不需要注入自定义的 shellcode 或者系统调用指令。需要了解libc和延迟绑定，了解ELF执行后，第一次调用函数，会实现一个延迟绑定当函数没system和"/bin/sh"时，就需要调用libc里面的，首先**找到libc的基地址**，通过已知函数的地址，输出在libc中的地址，来计算基地址
 
@@ -182,7 +182,7 @@ p.sendlineafter('encrypted\n',payload2)
 p.interactive()
 ```
 
-#### ROP技巧等
+### ROP技巧等
 
 工具：ROPgadget
 
@@ -190,17 +190,9 @@ p.interactive()
 ROPgadget --binary pwn1 --only "pop|ret" #找到pop链
 ```
 
+# 解题流程
 
-
-### 堆溢出
-
-### 整数溢出
-
-### 格式化字符串
-
-## 解题流程
-
-### 1.检查二进制开启的保护
+## 1.检查二进制开启的保护
 
 比赛的时候，主办方会给到一道pwn的服务器，找到相对于的二进制文件，然后拷贝一份单独拿出来分析
 
@@ -219,7 +211,7 @@ checksec pwn
 
 ![image-20240909214805873](image/image-20240909214805873.png)
 
-### 2.IDA反汇编分析程序
+## 2.IDA反汇编分析程序
 
 把程序拖进IDA，F5快捷键进行自动反汇编，注意是32位还是64位
 
@@ -235,7 +227,7 @@ checksec pwn
 
 ![image-20240909220514017](image/image-20240909220514017.png)
 
-### 利用python编写exp
+## 利用python编写exp
 
 ```python
 from pwn import *

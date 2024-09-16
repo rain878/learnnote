@@ -1,6 +1,6 @@
 # 分析
 
-来自[[SUCTF 2019]EasySQL](https://buuoj.cn/challenges#[SUCTF%202019]EasySQL)
+来自[[SUCTF 2019]EasySQL](https://buuoj.cn/challenges#[SUCTF%202019]EasySQL)，sql注入，联合注入
 
 页面功能是一个查询框，应该是sql注入，判断注入类型，使用万能密码不行，尝试联合注入，发现只有堆叠注入可行
 

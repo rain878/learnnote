@@ -384,6 +384,22 @@ base64 --input example.txt --output encoded.txt  #对文件进行编码并将结
 base64 --decode --input encoded.txt --output decoded.txt  #对文件进行解码并将结果保存到另一个文件
 ```
 
+### rsync
+
+rsync是一个在Unix和Linux系统中用于文件传输和同步的非常强大的工具
+
+```bash
+rsync [源目录] [目标目录]
+rsync -r ./123 ./123
+  -r:包含子目录
+  -a:可替-r，同步文件信息
+  -n:测试同步，不进行同步
+  --delete:以源目录保持一致，
+  --exclude:同步排除某些文件
+  --include:同步特定文件
+  -e:指定协议，ssh rsync
+```
+
 
 
 ## 查找文件和目录命令

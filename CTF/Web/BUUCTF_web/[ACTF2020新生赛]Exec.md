@@ -1,6 +1,6 @@
 # 分析
 
-来自[[ACTF2020 新生赛]Exec](https://buuoj.cn/challenges#[ACTF2020%20%E6%96%B0%E7%94%9F%E8%B5%9B]Exec)
+来自[[ACTF2020 新生赛]Exec](https://buuoj.cn/challenges#[ACTF2020%20%E6%96%B0%E7%94%9F%E8%B5%9B]Exec)，远程命令执行
 
 是一个ping功能，试试有没有命令执行，payload=`1270.0.0.1|ls /`
 

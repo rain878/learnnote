@@ -1,6 +1,6 @@
 # 分析
 
-来自[[极客大挑战 2019]Secret File](https://buuoj.cn/challenges#[%E6%9E%81%E5%AE%A2%E5%A4%A7%E6%8C%91%E6%88%98%202019]Secret%20File)
+来自[[极客大挑战 2019]Secret File](https://buuoj.cn/challenges#[%E6%9E%81%E5%AE%A2%E5%A4%A7%E6%8C%91%E6%88%98%202019]Secret%20File)，php伪协议
 
 页面没啥功能，F12查看源码，发现`./Archive_room.php`，访问看到
 

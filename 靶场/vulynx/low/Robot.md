@@ -1,6 +1,6 @@
 # 环境
 
-来自[vulnyx_Robot](https://vulnyx.com/#Robot)，获取网站泄露备份文件，获取mongo连接账号，拿到关键信息生成字典爆破密码
+来自[vulnyx_Robot](https://vulnyx.com/#Robot)，图片隐写，获取网站泄露备份文件，获取mongo连接账号，拿到关键信息生成字典爆破密码
 
 # 信息收集
 

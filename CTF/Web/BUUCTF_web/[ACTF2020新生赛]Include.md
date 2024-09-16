@@ -1,6 +1,6 @@
 # 分析
 
-来自[[ACTF2020 新生赛]Include](https://buuoj.cn/challenges#[ACTF2020%20%E6%96%B0%E7%94%9F%E8%B5%9B]Include)
+来自[[ACTF2020 新生赛]Include](https://buuoj.cn/challenges#[ACTF2020%20%E6%96%B0%E7%94%9F%E8%B5%9B]Include)，文件包含
 
 按照提示，访问?file=flag.php
 

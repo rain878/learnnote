@@ -1,6 +1,6 @@
 # 环境
 
-来自[Vulny_Pasymin](https://vulnyx.com/#Pasymin)，
+来自[Vulny_Pasymin](https://vulnyx.com/#Pasymin)，3000端口获取shell，拿到用户id_rsa
 
 # 信息收集
 

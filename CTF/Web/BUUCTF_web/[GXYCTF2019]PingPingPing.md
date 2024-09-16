@@ -1,6 +1,6 @@
 # 分析
 
-来自[[GXYCTF2019]Ping Ping Ping](https://buuoj.cn/challenges#[GXYCTF2019]Ping%20Ping%20Ping)
+来自[[GXYCTF2019]Ping Ping Ping](https://buuoj.cn/challenges#[GXYCTF2019]Ping%20Ping%20Ping)，远程命令执行
 
 提示也是ping，前一题是post请求，这题应该是get请求，payload=`127.0.0.1|ls`
 
@@ -30,8 +30,6 @@ if(isset($_GET['ip'])){
 }
 ?>
 ```
-
-
 
 # exp
 
